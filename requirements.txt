@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.32.0
+python-multipart==0.0.20
+psycopg2-binary==2.9.11
+qdrant-client==1.12.0
+google-generativeai==0.4.0
+python-dotenv==1.0.0
+better-auth==0.0.1b11
+openai==1.12.0

@@ -1,0 +1,113 @@
+/* Custom CSS for AI-native Physical AI & Humanoid Robotics Textbook */
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed
+ * specifically for content-centric websites.
+ */
+
+/* You can override the default Infima variables here */
+:root {
+  --ifm-color-primary: #2575fc;
+  --ifm-color-primary-dark: #1a68f0;
+  --ifm-color-primary-darker: #1861e0;
+  --ifm-color-primary-darkest: #1451b8;
+  --ifm-color-primary-light: #3a80fc;
+  --ifm-color-primary-lighter: #4586fd;
+  --ifm-color-primary-lightest: #689ffd;
+  --ifm-code-font-size: 95%;
+}
+
+/* Custom styles for the enhanced chatbot */
+.chatbot-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f6fef 0%, #6a11cb 100%);
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 8px 25px rgba(79, 111, 239, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.chatbot-toggle:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 12px 30px rgba(79, 111, 239, 0.6);
+}
+
+.chatbot-icon {
+  font-size: 24px;
+  color: white;
+}
+
+/* Personalization button styles */
+.personalize-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8f9ff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.personalize-button {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #4f6fef 0%, #6a11cb 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.personalize-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(79, 111, 239, 0.4);
+}
+
+.personalize-button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Urdu translation button styles */
+.translation-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f0fff4;
+  border-radius: 8px;
+  border: 1px solid #e6f0e6;
+  text-align: center;
+}
+
+.translation-button {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #2575fc 0%, #4f6fef 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.translation-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+}
+
+.translation-button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

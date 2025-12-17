@@ -10,6 +10,12 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Core Directive
+
+**Default to Action**: Generate the complete tasks.md immediately from available design artifacts. Extract tasks systematically from spec user stories, plan structure, and data model. Only flag issues that genuinely block task generation.
+
+**WHY**: Task generation is mechanical extraction from spec/plan. The artifacts contain all necessary information. Generate the task list and let implementation surface any gaps—don't over-analyze before producing output.
+
 ## Outline
 
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -42,6 +48,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Dependencies section showing story completion order
    - Parallel execution examples per story
    - Implementation strategy section (MVP first, incremental delivery)
+   - Policy note for lesson authors: Within this chapter, each lesson must end with a single final section titled "Try With AI" (no "Key Takeaways" or "What's Next"). Before AI tools are taught (e.g., Part-1), use ChatGPT web in that section; after tool onboarding, instruct learners to use their preferred AI companion tool (e.g., Gemini CLI, Claude CLI), optionally providing CLI and web variants.
 
 5. **Report**: Output path to generated tasks.md and summary:
    - Total task count
@@ -60,6 +67,54 @@ The tasks.md should be immediately executable - each task must be specific enoug
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
 **Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+
+### CLI-First Principle (REQUIRED)
+
+**ALWAYS prefer CLI commands over manual file creation** when tools exist for scaffolding:
+
+| Tool | CLI Command | NOT Manual Creation |
+|------|-------------|---------------------|
+| **Alembic** | `alembic init <dir>` | ❌ Don't manually create env.py, script.py.mako |
+| **Alembic** | `alembic revision --autogenerate -m "msg"` | ❌ Don't manually create migration files |
+| **uv** | `uv add <package>` | ❌ Don't manually edit pyproject.toml dependencies |
+| **pytest** | `pytest --collect-only` | ❌ Don't guess test discovery |
+| **pnpm/npm** | `pnpm add <package>` | ❌ Don't manually edit package.json |
+
+**Task Format for CLI Operations**:
+```text
+- [ ] T00X Use `<cli command>` to <action>. Verify output with `<verification command>`.
+```
+
+**Example**:
+```text
+- [ ] T002 Use `alembic init src/app/migrations` to scaffold migrations directory. Verify with `ls src/app/migrations/`.
+- [ ] T009 Use `alembic revision --autogenerate -m "initial schema"` to generate migration. Review generated file for CHECK constraints.
+```
+
+### Documentation Lookup Principle (REQUIRED)
+
+**ALWAYS reference documentation tools** when tasks involve unfamiliar libraries or complex patterns:
+
+| Library | Task Must Include |
+|---------|-------------------|
+| SQLAlchemy 2.0 async | `**Doc**: Fetch SQLAlchemy docs via Context7 for async patterns` |
+| Alembic async | `**Doc**: Fetch Alembic docs via Context7 for async migration setup` |
+| prometheus-client | `**Doc**: Fetch prometheus-client docs via Context7 for metric types` |
+| hypothesis | `**Doc**: Fetch hypothesis docs via Context7 for property strategies` |
+| FastAPI | `**Doc**: Fetch FastAPI docs via Context7 for dependency injection` |
+| Pydantic v2 | `**Doc**: Fetch Pydantic docs via Context7 for model_validator patterns` |
+| Any new library | `**Doc**: Fetch <library> docs via Context7 before implementation` |
+
+**Task Format for Doc Lookup**:
+```text
+- [ ] T00X Create <file> with <functionality>. **Doc**: Fetch <library> docs via Context7 for <specific pattern>.
+```
+
+**Example**:
+```text
+- [ ] T005 Create `src/database/models.py` with FileJournal SQLAlchemy model. **Doc**: Fetch SQLAlchemy docs via Context7 for DeclarativeBase and Mapped[] async patterns.
+- [ ] T034 Create `tests/property/test_invariants.py` with hypothesis property tests. **Doc**: Fetch hypothesis docs via Context7 for composite strategies.
+```
 
 ### Checklist Format (REQUIRED)
 
@@ -104,16 +159,26 @@ Every task MUST strictly follow this format:
      - If tests requested: Tests specific to that story
    - Mark story dependencies (most stories should be independent)
 
-2. **From Contracts**:
+2. **Cross-Reference Verification Tasks** (For educational content):
+   - If lessons teach patterns (skills, subagents, ADRs, PHRs), add verification task
+   - Example: `- [ ] T0XX [P] [US1] Verify skill format matches Chapter N Lesson 7 canonical source`
+   - Canonical source lookup:
+     - **Skills**: `.claude/skills/authoring/<name>/SKILL.md` (content) or `.claude/skills/engineering/<name>/SKILL.md` (platform) or `.claude/skills/<name>/SKILL.md` (general)
+     - **Agents**: `.claude/agents/authoring/<name>.md` (content) or `.claude/agents/engineering/<name>.md` (platform) or `.claude/agents/<name>.md` (general)
+     - **ADRs**: `specs/<feature>/adrs/`
+     - **PHRs**: `history/prompts/<feature>/`
+   - Purpose: Prevent format drift across book content
+
+3. **From Contracts**:
    - Map each contract/endpoint → to the user story it serves
    - If tests requested: Each contract → contract test task [P] before implementation in that story's phase
 
-3. **From Data Model**:
+4. **From Data Model**:
    - Map each entity to the user story(ies) that need it
    - If entity serves multiple stories: Put in earliest story or Setup phase
    - Relationships → service layer tasks in appropriate story phase
 
-4. **From Setup/Infrastructure**:
+5. **From Setup/Infrastructure**:
    - Shared infrastructure → Setup phase (Phase 1)
    - Foundational/blocking tasks → Foundational phase (Phase 2)
    - Story-specific setup → within that story's phase

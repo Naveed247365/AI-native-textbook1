@@ -208,3 +208,600 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+- # Project Specification: OpenAI Agent SDK with OpenRouter + Qdrant RAG
+
+
+
+## Goal
+
+Build a RAG-based chatbot using the OpenAI Agent / Chat SDK.
+
+OpenAI API will NOT be used.
+
+Instead, OpenRouter will be used as an OpenAI-compatible provider via base_url.
+
+The chatbot must answer ONLY from retrieved context stored in Qdrant.
+
+
+
+---
+
+
+
+## Key Constraints
+
+- Do NOT use OpenAI's official API.
+
+- Use OpenRouter as the LLM provider.
+
+- Use OpenAI SDK with:
+
+  - OPENAI_API_KEY = OpenRouter API Key
+
+  - OPENAI_BASE_URL = https://openrouter.ai/api/v1
+
+- The system must be fully compatible with OpenAI Agent / Chat SDK.
+
+
+
+---
+
+
+
+## Environment Variables
+
+The system MUST rely on the following environment variables:
+
+
+
+OPENAI_API_KEY = "OpenRouter API Key"
+
+OPENAI_BASE_URL = "https://openrouter.ai/api/v1"
+
+
+
+QDRANT_URL = "http://localhost:6333"
+
+QDRANT_COLLECTION = "rag_docs"
+
+
+
+---
+
+
+
+## Model Selection
+
+Use ONLY OpenAI-compatible models from OpenRouter.
+
+Recommended default model:
+
+- qwen/qwen-2.5-7b-instruct
+
+
+
+Alternative compatible models:
+
+- meta-llama/llama-3.1-8b-instruct
+
+- mistralai/mistral-7b-instruct
+
+
+
+---
+
+
+
+## RAG Requirements
+
+1. All user questions MUST be embedded using an OpenAI-compatible embedding model.
+
+2. The embedding vector MUST be used to search Qdrant.
+
+3. Top relevant text chunks MUST be retrieved from Qdrant.
+
+4. The retrieved text MUST be treated as the ONLY allowed knowledge source.
+
+5. The final answer MUST be generated strictly from the retrieved context.
+
+
+
+If the answer is not present in the retrieved context, the assistant MUST reply:
+
+"Is sawal ka jawab provided data me mojood nahi hai."
+
+
+
+---
+
+
+
+## Agent Behavior
+
+- The chatbot MUST behave like an agent.
+
+- The agent MUST call a tool named `search_qdrant` to retrieve context.
+
+- The agent MUST NOT answer directly without calling the tool.
+
+- Tool calling MUST follow OpenAI function/tool calling format.
+
+
+
+---
+
+
+
+## Tool Specification: search_qdrant
+
+Tool name: search_qdrant
+
+
+
+Purpose:
+
+Retrieve relevant document chunks from Qdrant based on the user query.
+
+
+
+Input:
+
+{
+
+  "query": "string"
+
+}
+
+
+
+Output:
+
+A single concatenated string containing the most relevant text chunks.
+
+
+
+---
+
+
+
+## System Prompt (Strict)
+
+"You are a RAG-based AI agent.
+
+You MUST retrieve context using the search_qdrant tool before answering.
+
+You MUST answer ONLY from the retrieved context.
+
+If the answer is not found in the context, respond with:
+
+'Is sawal ka jawab provided data me mojood nahi hai.'"
+
+
+
+---
+
+
+
+## Forbidden Behavior
+
+- DO NOT use prior knowledge.
+
+- DO NOT hallucinate.
+
+- DO NOT answer without retrieved context.
+
+- DO NOT use internet data.
+
+
+
+---
+
+
+
+## Implementation Notes
+
+- Python must be used.
+
+- The OpenAI SDK must be used with base_url override.
+
+- Qdrant must be used as the vector database.
+
+- Temperature must be set to 0 for deterministic output.
+
+
+
+---
+
+
+
+## Expected Outcome
+
+A working RAG chatbot where:
+
+- OpenRouter replaces OpenAI seamlessly.
+
+- OpenAI Agent / Chat SDK works without modification.
+
+- All answers are grounded in Qdrant data only.
+- # UI/UX Specification: Selected Text Injection into Chat Input (CRITICAL FIX)
+
+
+
+## Problem Statement
+
+The backend RAG system is fully functional and correctly processes:
+
+- `selected_text` for Qdrant search
+
+- `message` for the user question
+
+
+
+However, the frontend UX is incorrect.
+
+
+
+Currently:
+
+- When the user selects text, a popup appears
+
+- The selected text is shown above the chat
+
+- The selected text is NOT injected into the chat input field
+
+
+
+This behavior is incorrect and must be fixed.
+
+
+
+---
+
+
+
+## Goal
+
+Update the frontend so that when a user selects text on the page:
+
+
+
+1. The selected text is automatically inserted INTO the chat input field
+
+2. The input field is pre-filled with a structured prompt
+
+3. The user can immediately type a question and submit
+
+
+
+---
+
+
+
+## REQUIRED UX BEHAVIOR (MANDATORY)
+
+
+
+### When user selects text:
+
+- Detect text selection using browser selection APIs
+
+- Automatically open the chatbot input
+
+- Inject selected text into the input field
+
+
+
+### Input Field Content MUST be:
+
+
+
+Selected text:
+
+"<SELECTED_TEXT>"
+
+
+
+Ask a question about this text...
+
+
+
+The cursor MUST be placed at the end so the user can type immediately.
+
+
+
+---
+
+
+
+## Chat Submission Flow
+
+
+
+When the user clicks "Ask" or presses Enter:
+
+
+
+Frontend MUST send the following payload to backend:
+
+
+
+{
+
+  "message": "<FULL INPUT FIELD CONTENT>",
+
+  "selected_text": "<RAW SELECTED TEXT ONLY>"
+
+}
+
+
+
+---
+
+
+
+## Important UX Rules
+
+
+
+- DO NOT display selected text only as a label or popup
+
+- DO NOT keep selected text outside the input field
+
+- DO NOT require the user to manually paste selected text
+
+- The selected text MUST be editable inside the input field
+
+- The UX should match modern AI assistants (Perplexity, Claude, ChatGPT extensions)
+
+
+
+---
+
+
+
+## Technical Notes (Frontend)
+
+
+
+- Use window.getSelection().toString()
+
+- On text selection event:
+
+  - Store selected text in state
+
+  - Inject formatted text into input field value
+
+- Ensure input remains controlled
+
+- Preserve existing backend API contract (DO NOT change backend)
+
+
+
+---
+
+
+
+## Backend Status (DO NOT MODIFY)
+
+
+
+- Backend RAG logic is correct
+
+- selected_text parameter is already supported
+
+- Fallback behavior is correct
+
+- No backend changes are required
+
+
+
+This task is FRONTEND-ONLY.
+
+
+
+---
+
+
+
+## Expected Outcome
+
+
+
+After implementation:
+
+- Selecting any text automatically prepares a contextual question prompt
+
+- User can immediately ask a question about the selected text
+
+- RAG answers are generated correctly based on selected text
+- # UI/UX Specification: Selected Text Injection into Chat Input (CRITICAL FIX)
+
+
+
+## Problem Statement
+
+The backend RAG system is fully functional and correctly processes:
+
+- `selected_text` for Qdrant search
+
+- `message` for the user question
+
+
+
+However, the frontend UX is incorrect.
+
+
+
+Currently:
+
+- When the user selects text, a popup appears
+
+- The selected text is shown above the chat
+
+- The selected text is NOT injected into the chat input field
+
+
+
+This behavior is incorrect and must be fixed.
+
+
+
+---
+
+
+
+## Goal
+
+Update the frontend so that when a user selects text on the page:
+
+
+
+1. The selected text is automatically inserted INTO the chat input field
+
+2. The input field is pre-filled with a structured prompt
+
+3. The user can immediately type a question and submit
+
+
+
+---
+
+
+
+## REQUIRED UX BEHAVIOR (MANDATORY)
+
+
+
+### When user selects text:
+
+- Detect text selection using browser selection APIs
+
+- Automatically open the chatbot input
+
+- Inject selected text into the input field
+
+
+
+### Input Field Content MUST be:
+
+
+
+Selected text:
+
+"<SELECTED_TEXT>"
+
+
+
+Ask a question about this text...
+
+
+
+The cursor MUST be placed at the end so the user can type immediately.
+
+
+
+---
+
+
+
+## Chat Submission Flow
+
+
+
+When the user clicks "Ask" or presses Enter:
+
+
+
+Frontend MUST send the following payload to backend:
+
+
+
+{
+
+  "message": "<FULL INPUT FIELD CONTENT>",
+
+  "selected_text": "<RAW SELECTED TEXT ONLY>"
+
+}
+
+
+
+---
+
+
+
+## Important UX Rules
+
+
+
+- DO NOT display selected text only as a label or popup
+
+- DO NOT keep selected text outside the input field
+
+- DO NOT require the user to manually paste selected text
+
+- The selected text MUST be editable inside the input field
+
+- The UX should match modern AI assistants (Perplexity, Claude, ChatGPT extensions)
+
+
+
+---
+
+
+
+## Technical Notes (Frontend)
+
+
+
+- Use window.getSelection().toString()
+
+- On text selection event:
+
+  - Store selected text in state
+
+  - Inject formatted text into input field value
+
+- Ensure input remains controlled
+
+- Preserve existing backend API contract (DO NOT change backend)
+
+
+
+---
+
+
+
+## Backend Status (DO NOT MODIFY)
+
+
+
+- Backend RAG logic is correct
+
+- selected_text parameter is already supported
+
+- Fallback behavior is correct
+
+- No backend changes are required
+
+
+
+This task is FRONTEND-ONLY.
+
+
+
+---
+
+
+
+## Expected Outcome
+
+
+
+After implementation:
+
+- Selecting any text automatically prepares a contextual question prompt
+
+- User can immediately ask a question about the selected text
+
+- RAG answers are generated correctly based on selected text

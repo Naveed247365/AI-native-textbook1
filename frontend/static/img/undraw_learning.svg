@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2575fc"/>
+      <stop offset="100%" stop-color="#4f6fef"/>
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6a11cb"/>
+      <stop offset="100%" stop-color="#2575fc"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="white"/>
+  <g transform="translate(400, 300)">
+    <g transform="scale(0.8)">
+      <rect x="-100" y="-120" width="200" height="240" rx="30" fill="url(#gradient1)" opacity="0.15" stroke="url(#gradient1)" stroke-width="4"/>
+      <rect x="-80" y="-100" width="160" height="200" rx="20" fill="white" stroke="url(#gradient1)" stroke-width="2"/>
+      <rect x="-60" y="-80" width="120" height="30" rx="8" fill="url(#gradient2)" opacity="0.9"/>
+      <rect x="-60" y="-40" width="120" height="20" rx="5" fill="url(#gradient1)" opacity="0.6"/>
+      <rect x="-60" y="-10" width="120" height="20" rx="5" fill="url(#gradient1)" opacity="0.6"/>
+      <rect x="-60" y="20" width="90" height="20" rx="5" fill="url(#gradient1)" opacity="0.6"/>
+      <rect x="-60" y="50" width="120" height="20" rx="5" fill="url(#gradient1)" opacity="0.6"/>
+      <rect x="-60" y="80" width="60" height="20" rx="5" fill="url(#gradient1)" opacity="0.6"/>
+      <circle cx="-120" cy="-140" r="25" fill="url(#gradient2)" opacity="0.9"/>
+      <path d="M -135 -155 L -105 -125 M -105 -155 L -135 -125" stroke="white" stroke-width="4"/>
+      <circle cx="120" cy="-140" r="25" fill="url(#gradient2)" opacity="0.9"/>
+      <path d="M 110 -150 Q 120 -145 130 -150 Q 135 -140 130 -135 Q 120 -140 110 -135 Q 105 -140 110 -150" fill="white"/>
+      <circle cx="0" cy="140" r="30" fill="url(#gradient1)" opacity="0.9"/>
+      <path d="M -15 130 L 0 150 L 15 130" fill="white"/>
+    </g>
+  </g>
+</svg>
