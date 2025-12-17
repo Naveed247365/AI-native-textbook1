@@ -12,8 +12,12 @@ This guide explains how to deploy the AI-native textbook application to Railway 
 1. **Fork this repository** to your GitHub account
 2. **Sign in to Railway** using your GitHub account
 3. **Create a new project** and select "Deploy from GitHub"
-4. **Select your forked repository** and make sure to select the `/backend` directory as the root
-5. **Set environment variables** in Railway:
+4. **Select your forked repository**
+5. **In the setup, make sure to configure:**
+   - **Build Directory**: `/backend`
+   - **Working Directory**: `/backend`
+   - **Builder**: Should automatically detect as Docker/Nixpacks due to Dockerfile
+6. **Set environment variables** in Railway:
    - `OPENAI_API_KEY`: Your OpenRouter API key
    - `OPENAI_BASE_URL`: `https://openrouter.ai/api/v1`
    - `QDRANT_URL`: Your Qdrant database URL
@@ -23,7 +27,7 @@ This guide explains how to deploy the AI-native textbook application to Railway 
    - `SECRET_KEY`: A random secret key for JWT
    - `DEBUG`: `false` for production
    - `LOG_LEVEL`: `info`
-6. **Deploy** the project
+7. **Deploy** the project
 
 ### Important Notes
 - Railway will automatically detect and use the `Dockerfile` in the backend directory

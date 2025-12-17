@@ -3,30 +3,64 @@
 ## 1. Backend Deployment to Railway
 
 ### Prerequisites:
-- Railway CLI installed: `npm install -g @railway/cli`
-- Or use the web interface at https://railway.app
+- Railway account at https://railway.app
+- GitHub account
 
-### Steps:
+### Web Interface Method (Recommended):
 
-1. **Prepare your backend directory**:
+1. **Fork this repository** to your GitHub account if you haven't already
+
+2. **Go to Railway.app** and sign in with your GitHub account
+
+3. **Click "New Project"** and select "Deploy from GitHub repo"
+
+4. **Select your forked repository**
+
+5. **Configure the deployment**:
+   - **Working Directory**: Set to `/backend`
+   - **Builder**: Should automatically detect NIXPACKS due to the Dockerfile
+   - **Build Command** (if prompted): `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+
+6. **Set environment variables** in the Railway dashboard:
+   - `OPENAI_API_KEY`: Your OpenRouter API key
+   - `OPENAI_BASE_URL`: `https://openrouter.ai/api/v1`
+   - `QDRANT_URL`: Your Qdrant database URL
+   - `QDRANT_API_KEY`: Your Qdrant API key
+   - `QDRANT_COLLECTION`: Collection name (e.g., `project_documents`)
+   - `NEON_DB_URL`: Your Neon database connection string
+   - `SECRET_KEY`: A random secret key for JWT
+   - `DEBUG`: `false` for production
+   - `LOG_LEVEL`: `info`
+
+7. **Deploy** the project
+
+### Railway CLI Method (Alternative):
+If you prefer using the CLI:
+
+1. **Install Railway CLI**:
    ```bash
-   cd /path/to/your/AI-native-textbook/backend
+   npm install -g @railway/cli
    ```
 
-2. **Login to Railway** (if using CLI):
+2. **Login to Railway**:
    ```bash
    railway login
    ```
 
-3. **Link your project** (if using CLI):
+3. **Navigate to backend directory**:
    ```bash
-   railway init
-   # Or link to existing project:
-   # railway link <project-id>
+   cd /path/to/your/AI-native-textbook/backend
    ```
 
-4. **Set environment variables**:
+4. **Initialize project**:
    ```bash
+   railway init
+   ```
+
+5. **Link to GitHub and set variables**:
+   ```bash
+   railway link
    railway variables set OPENAI_API_KEY="your_openrouter_api_key"
    railway variables set OPENAI_BASE_URL="https://openrouter.ai/api/v1"
    railway variables set QDRANT_URL="your_qdrant_url"
@@ -38,15 +72,10 @@
    railway variables set LOG_LEVEL="info"
    ```
 
-5. **Deploy**:
+6. **Deploy**:
    ```bash
-   # Using CLI:
    railway up
-
-   # Or use the web interface by connecting your GitHub repo
    ```
-
-6. **Get your deployment URL** from Railway dashboard.
 
 ## 2. Frontend Deployment to Vercel
 
