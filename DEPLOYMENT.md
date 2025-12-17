@@ -26,6 +26,11 @@ This guide explains how to deploy the AI-native textbook application to Railway 
    - `LOG_LEVEL`: `info`
 7. **Deploy** the project
 
+### Troubleshooting
+- If you see "Unexposed service" or port errors, make sure your environment variables are set correctly
+- The application will automatically use the PORT environment variable provided by Railway
+- Make sure to redeploy after making any configuration changes
+
 ### Important Notes
 - Railway will automatically detect and use the `Dockerfile` in the backend directory
 - The app will be accessible on a random railway.app URL (e.g., `https://your-project-12345.railway.app`)

@@ -19,5 +19,5 @@ COPY backend/ .
 # Expose the port the app runs on
 EXPOSE 8001
 
-# Run the application
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8001}"]
+# Run the application - make sure we're in the right directory
+CMD ["bash", "-c", "cd /app && python -c \"from main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=int('${PORT:-8001}'))\""]

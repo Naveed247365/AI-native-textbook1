@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 8001
 
 # Run the application
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8001}"]
+CMD ["bash", "-c", "cd /app && python -c \"from main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=int('${PORT:-8001}'))\""]
