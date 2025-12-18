@@ -138,7 +138,7 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
 
     try {
       // Call backend API
-      const response = await fetch('http://localhost:8001/api/chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
