@@ -1,24 +1,9 @@
 {
   "framework": "docusaurus",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://<YOUR_BACKEND_URL>.railway.app/api/:path*"
+      "destination": "https://naveed247365-ai-textbook-backend.hf.space/api/:path*"
     }
   ]
 }
