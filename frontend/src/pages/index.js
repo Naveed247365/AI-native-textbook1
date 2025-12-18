@@ -90,7 +90,7 @@ function CTASection() {
               <div className={styles.ctaButtons}>
                 <Link
                   className="button button--primary button--lg"
-                  to="/docs/category/getting-started">
+                  to="/docs/intro">
                   Begin Your Journey
                 </Link>
                 <Link
