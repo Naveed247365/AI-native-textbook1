@@ -55,11 +55,17 @@ async def startup_event():
 # Add CORS middleware to allow requests from the Docusaurus frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:8000", "*"],  # Allow frontend origins
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
-    allow_origin_regex=r"https?://localhost(:[0-9]+)?",
+    expose_headers=["*"],
 )
 
 # Include API routers
