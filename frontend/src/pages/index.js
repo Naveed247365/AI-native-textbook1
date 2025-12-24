@@ -37,8 +37,8 @@ function HomepageHeader() {
               </Link>
               <Link
                 className="button button--primary button--lg"
-                to="/docs/humanoid-robotics/intro">
-                Explore Humanoid Robotics
+                to="/docs/capstone-project">
+                View Capstone Project
               </Link>
             </div>
           </div>
