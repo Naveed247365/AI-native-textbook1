@@ -5,6 +5,11 @@ chapter_id: "ch04-vision-language-action-models"
 
 # Module 4: Vision-Language-Action Models
 
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img src="https://images.unsplash.com/photo-1563207153-f403bf289096?w=1200&q=80" alt="Vision-Language-Action Models" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
+  <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>AI models integrating vision, language, and robotic action</p>
+</div>
+
 ## Introduction to Vision-Language-Action (VLA) Models
 
 Vision-Language-Action (VLA) models represent a paradigm shift in robotics, enabling robots to understand natural language instructions, perceive their environment, and execute complex tasks. These models bridge the gap between high-level human communication and low-level robotic control, forming a crucial component of embodied intelligence.
@@ -19,6 +24,11 @@ VLA models are neural architectures that integrate three modalities:
 This integration allows robots to perform tasks like "Pick up the red cup on the left side of the table" by processing the language instruction, identifying the relevant objects in the visual scene, and executing the appropriate motor actions.
 
 ### The VLA Architecture
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80" alt="Multimodal AI Integration" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
+  <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Fusion of vision, language, and action in AI models</p>
+</div>
 
 #### Multi-Modal Fusion
 VLA models typically use transformer architectures to fuse information across modalities:

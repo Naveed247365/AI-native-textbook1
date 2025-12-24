@@ -5,6 +5,11 @@ chapter_id: capstone-project
 
 # Capstone Project: Embodied Intelligence System
 
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80" alt="Capstone Robotics Project" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
+  <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Complete embodied intelligence system integration</p>
+</div>
+
 ## Project Overview
 
 The capstone project represents the culmination of your learning journey in Physical AI and Humanoid Robotics. You will design, implement, and demonstrate a complete embodied intelligence system that integrates all the concepts covered throughout the course: ROS 2, simulation, NVIDIA Isaac, Vision-Language-Action models, and appropriate hardware platforms.
@@ -19,6 +24,11 @@ The primary objectives of this capstone project are to:
 - Present technical work to peers and instructors
 
 ### Project Themes
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img src="https://images.unsplash.com/photo-1581091012184-063038ec68e7?w=800&q=80" alt="Robotics Project Themes" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
+  <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Diverse robotics project opportunities</p>
+</div>
 
 Students may choose from the following project themes or propose their own with instructor approval:
 
@@ -181,6 +191,11 @@ Projects may include additional features for extra credit:
 - Real-world deployment scenarios
 
 ## Hardware and Software Requirements
+
+<div style={{textAlign: 'center', margin: '2rem 0'}}>
+  <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="Robotics Hardware Setup" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
+  <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Hardware and software infrastructure</p>
+</div>
 
 ### Minimum Hardware
 - NVIDIA Jetson AGX Orin or equivalent for edge processing
