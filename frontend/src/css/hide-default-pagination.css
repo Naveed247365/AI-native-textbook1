@@ -1,0 +1,9 @@
+/* Hide Docusaurus default pagination (we have custom ChapterNavigation) */
+.pagination-nav {
+  display: none !important;
+}
+
+/* Our custom ChapterNavigation remains visible */
+.chapter-navigation {
+  display: block;
+}

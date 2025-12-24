@@ -4,6 +4,9 @@
    Silver / Dark Slate / NVIDIA Green
    ============================================ */
 
+/* Import additional styles */
+@import './hide-default-pagination.css';
+
 :root {
   /* NVIDIA Green - Primary Accent Color */
   --ifm-color-primary: #76B900;
