@@ -6,6 +6,7 @@
 
 /* Import additional styles */
 @import './hide-default-pagination.css';
+@import './homepage-fixes.css';
 
 :root {
   /* NVIDIA Green - Primary Accent Color */

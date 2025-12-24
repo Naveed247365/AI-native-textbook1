@@ -14,11 +14,16 @@
   display: none !important;
 }
 
-/* Hide # (hash) anchor links on headings */
+/* Hide # (hash) symbol but keep anchor functionality for TOC */
 .hash-link {
-  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
 }
 
+/* Keep anchors for TOC but make them invisible */
 .anchor {
-  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  /* Don't use display: none - it breaks TOC links */
 }
