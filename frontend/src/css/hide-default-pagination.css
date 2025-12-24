@@ -1,9 +1,24 @@
-/* Hide Docusaurus default pagination (we have custom ChapterNavigation) */
+/* REVERSED: Keep default Docusaurus pagination, hide custom ChapterNavigation */
+/* Default pagination has theme-matching green styling */
 .pagination-nav {
+  display: block !important;
+}
+
+/* Hide our custom ChapterNavigation component */
+.chapter-navigation {
   display: none !important;
 }
 
-/* Our custom ChapterNavigation remains visible */
-.chapter-navigation {
-  display: block;
+/* Hide "Try with AI" direct link on headings */
+.heading-link {
+  display: none !important;
+}
+
+/* Hide # (hash) anchor links on headings */
+.hash-link {
+  display: none !important;
+}
+
+.anchor {
+  display: none !important;
 }
