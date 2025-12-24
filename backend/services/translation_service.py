@@ -1,14 +1,20 @@
-import google.generativeai as genai
+from openai import OpenAI
 import logging
 from typing import Dict
 import time
+import os
 
 logger = logging.getLogger(__name__)
 
 class TranslationService:
-    def __init__(self, gemini_api_key: str):
-        genai.configure(api_key=gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+    def __init__(self, openrouter_api_key: str = None):
+        """Initialize OpenRouter client for translation using OpenAI SDK compatibility"""
+        api_key = openrouter_api_key or os.getenv("OPENROUTER_API_KEY")
+        self.client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=api_key
+        )
+        self.model = "google/gemini-2.0-flash-exp:free"
         self.translation_cache: Dict[str, str] = {}
         self.cache_timestamps: Dict[str, float] = {}
 
@@ -23,20 +29,21 @@ class TranslationService:
                 logger.info("Returning cached translation")
                 return self.translation_cache[cache_key]
 
-        # Call Gemini API for translation with improved prompt
+        # Call OpenRouter API for translation using OpenAI SDK
         try:
-            prompt = self._create_urdu_translation_prompt(text)
+            system_prompt = self._get_urdu_translation_system_prompt()
 
-            response = self.model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=min(len(text) * 3, 4000),  # Urdu text might be longer
-                    temperature=0.2,
-                    top_p=0.9,
-                )
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": text}
+                ],
+                temperature=0.3,
+                max_tokens=8000
             )
 
-            translated_text = self._format_translation_response(response.text)
+            translated_text = response.choices[0].message.content.strip()
 
             # Cache the translation
             self.translation_cache[cache_key] = translated_text
@@ -50,38 +57,32 @@ class TranslationService:
             # Return a professional fallback response
             return f"Translation unavailable: {text[:100]}..."
 
-    def _create_urdu_translation_prompt(self, text: str) -> str:
-        """Create a professional Urdu translation prompt"""
-        return f"""You are an elite professional translator specializing in technical and educational content. Translate the provided English text to Urdu with precision and cultural sensitivity.
+    def _get_urdu_translation_system_prompt(self) -> str:
+        """Get the system prompt for Urdu translation from spec contract"""
+        return """You are a technical translator specializing in AI, robotics, and computer science education.
+Translate the following English text to Urdu following these rules strictly:
 
-TRANSLATION REQUIREMENTS:
-• Maintain technical accuracy for robotics/AI terminology
-• Use proper Urdu script and correct grammar
-• Preserve the original meaning and context
-• Apply appropriate formality level for educational content
-• Ensure readability and flow in Urdu
-• Do not add any commentary or explanations
+TECHNICAL TERMS:
+- Keep in English: ROS2, Python, API, HTTP, JSON, ML, AI, function, class, variable, loop, array
+- Translate common words: robot → روبوٹ, computer → کمپیوٹر, network → نیٹ ورک
+- Transliterate ambiguous terms: Sensor → سینسر (Sensor), Actuator → ایکچویٹر (Actuator)
+- NEVER translate code identifiers (function names, variables, etc.)
 
-SOURCE TEXT:
-"{text}"
+FORMATTING:
+- Preserve ALL markdown syntax (headings #, bold **, italic _, lists -, links [](url))
+- Keep code blocks entirely in English (including comments): ```language ... ```
+- Keep inline code in English: `variable_name`
+- Keep LaTeX math unchanged: $equation$
+- Translate link text but keep URLs: [ترجمہ شدہ متن](https://example.com)
+- Translate image alt text but keep src: ![روبوٹ کی تصویر](robot.png)
 
-URDU TRANSLATION:"""
+TONE:
+- Use formal educational tone (not conversational)
+- Follow standard Urdu grammar rules
+- Use proper Urdu punctuation (،؟ instead of ,?)
+- Do not mix English and Urdu in same sentence except for technical terms listed above
 
-    def _format_translation_response(self, response_text: str) -> str:
-        """Format the translation response for consistency"""
-        # Clean up response
-        formatted = response_text.strip()
-
-        # Remove any unwanted prefixes or explanations
-        if 'TRANSLATION:' in formatted:
-            formatted = formatted.split('TRANSLATION:')[-1].strip()
-        elif 'TRANSLATED TEXT:' in formatted:
-            formatted = formatted.split('TRANSLATED TEXT:')[-1].strip()
-
-        # Clean up extra whitespace
-        formatted = ' '.join(formatted.split())
-
-        return formatted
+Translate now:"""
 
     def translate_to_english(self, urdu_text: str, ttl: int = 3600) -> str:
         """Translate Urdu text back to English with caching"""
@@ -94,20 +95,21 @@ URDU TRANSLATION:"""
                 logger.info("Returning cached translation")
                 return self.translation_cache[cache_key]
 
-        # Call Gemini API for translation with improved prompt
+        # Call OpenRouter API for translation using OpenAI SDK
         try:
-            prompt = self._create_english_translation_prompt(urdu_text)
+            system_prompt = self._get_english_translation_system_prompt()
 
-            response = self.model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=min(len(urdu_text) * 2, 4000),
-                    temperature=0.2,
-                    top_p=0.9,
-                )
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": urdu_text}
+                ],
+                temperature=0.3,
+                max_tokens=8000
             )
 
-            translated_text = self._format_translation_response(response.text)
+            translated_text = response.choices[0].message.content.strip()
 
             # Cache the translation
             self.translation_cache[cache_key] = translated_text
@@ -121,21 +123,21 @@ URDU TRANSLATION:"""
             # Return a professional fallback response
             return f"Translation unavailable: {urdu_text[:100]}..."
 
-    def _create_english_translation_prompt(self, urdu_text: str) -> str:
-        """Create a professional English translation prompt"""
-        return f"""You are an elite professional translator specializing in technical and educational content. Translate the provided Urdu text to English with precision and accuracy.
+    def _get_english_translation_system_prompt(self) -> str:
+        """Get the system prompt for English translation"""
+        return """You are a technical translator specializing in AI, robotics, and computer science education.
+Translate the following Urdu text to English with precision and accuracy.
 
 TRANSLATION REQUIREMENTS:
-• Maintain technical accuracy for robotics/AI terminology
-• Preserve the original meaning and context
-• Apply appropriate formality level for educational content
-• Ensure readability and flow in English
-• Do not add any commentary or explanations
+- Maintain technical accuracy for robotics/AI terminology
+- Preserve the original meaning and context
+- Apply appropriate formality level for educational content
+- Ensure readability and flow in English
+- Keep technical terms (ROS2, Python, API, etc.) in English
+- Preserve markdown formatting and code blocks
+- Do not add any commentary or explanations
 
-SOURCE TEXT:
-"{urdu_text}"
-
-ENGLISH TRANSLATION:"""
+Translate now:"""
 
     def clear_cache(self):
         """Clear the translation cache"""

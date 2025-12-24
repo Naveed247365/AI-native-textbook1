@@ -158,11 +158,28 @@ export async function computeContentHash(content) {
  * @returns {string} Extracted content
  */
 export function extractChapterContent() {
-  // Try to get the main article content
-  const articleElement = document.querySelector('article.theme-doc-markdown');
+  // Try multiple selectors to find the main article content
+  const selectors = [
+    'article.theme-doc-markdown',
+    'article[role="main"]',
+    'main article',
+    'div.theme-doc-markdown',
+    'div.markdown',
+    '.docMainContainer article',
+    'main'
+  ];
+
+  let articleElement = null;
+  for (const selector of selectors) {
+    articleElement = document.querySelector(selector);
+    if (articleElement) {
+      console.log('Found article element with selector:', selector);
+      break;
+    }
+  }
 
   if (!articleElement) {
-    console.warn('Article element not found');
+    console.warn('Article element not found with any selector');
     return '';
   }
 

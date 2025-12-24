@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import useTranslation from '../../hooks/useTranslation';
-import './UrduTranslationButton.module.css';
+import FeedbackButton from './FeedbackButton';
+import styles from './UrduTranslationButton.module.css';
 
 /**
  * Urdu Translation Button Component
@@ -15,6 +16,8 @@ import './UrduTranslationButton.module.css';
  * @param {string} chapterId - Chapter identifier from frontmatter
  */
 const UrduTranslationButton = ({ chapterId }) => {
+  console.log('UrduTranslationButton rendered with chapterId:', chapterId);
+
   // Get auth token from localStorage
   const authToken = typeof window !== 'undefined'
     ? localStorage.getItem('user_token')
@@ -24,12 +27,15 @@ const UrduTranslationButton = ({ chapterId }) => {
     ? localStorage.getItem('user_email')
     : null;
 
+  console.log('Auth status:', { authToken: !!authToken, userEmail: !!userEmail });
+
   // Use translation hook
   const {
     isUrdu,
     loading,
     error,
     cached,
+    translationId,
     handleTranslate,
     handleToggle
   } = useTranslation(chapterId, authToken);
@@ -75,11 +81,27 @@ const UrduTranslationButton = ({ chapterId }) => {
   };
 
   return (
-    <div className="urdu-translation-container">
+    <div style={{
+      padding: '1rem',
+      border: '2px solid #10b981',
+      borderRadius: '8px',
+      marginBottom: '1rem',
+      backgroundColor: '#f0fdf4'
+    }}>
       <button
         onClick={handleClick}
         disabled={loading}
-        className={getButtonClass()}
+        style={{
+          padding: '0.75rem 1.5rem',
+          backgroundColor: loading ? '#9ca3af' : (isUrdu ? '#3b82f6' : '#10b981'),
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          fontSize: '1rem',
+          fontWeight: '600',
+          opacity: !isAuthenticated ? 0.6 : 1
+        }}
         title={
           !isAuthenticated
             ? 'Login required for translations'
@@ -138,6 +160,17 @@ const UrduTranslationButton = ({ chapterId }) => {
             {' to translate content'}
           </span>
         </div>
+      )}
+
+      {/* Feedback button - only shown when viewing Urdu translation */}
+      {isUrdu && !loading && isAuthenticated && translationId && (
+        <FeedbackButton
+          translationId={translationId}
+          onFeedbackSubmit={(data) => {
+            console.log('Feedback submitted:', data);
+            // Optional: Show success notification
+          }}
+        />
       )}
 
       {/* Info text */}

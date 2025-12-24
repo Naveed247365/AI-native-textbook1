@@ -1,0 +1,168 @@
+name: Backend Environment Variables Check
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  verify-env-vars:
+    name: Verify Backend Environment Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install python-dotenv
+
+      - name: Check required environment variables (GitHub Secrets)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NEON_POSTGRES_URL: ${{ secrets.NEON_POSTGRES_URL }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        run: |
+          echo "🔍 Checking required environment variables..."
+
+          # Function to check if variable is set
+          check_var() {
+            if [ -z "${!1}" ]; then
+              echo "❌ ERROR: $1 is not set"
+              return 1
+            else
+              echo "✅ $1 is configured"
+              return 0
+            fi
+          }
+
+          # Check all required variables
+          all_good=true
+
+          check_var "OPENROUTER_API_KEY" || all_good=false
+          check_var "NEON_POSTGRES_URL" || all_good=false
+          check_var "JWT_SECRET_KEY" || all_good=false
+
+          if [ "$all_good" = false ]; then
+            echo ""
+            echo "❌ FAILED: Some required environment variables are missing!"
+            echo ""
+            echo "Please add the following secrets to your GitHub repository:"
+            echo "  Settings → Secrets and variables → Actions → New repository secret"
+            echo ""
+            echo "Required secrets:"
+            echo "  - OPENROUTER_API_KEY (from https://openrouter.ai/keys)"
+            echo "  - NEON_POSTGRES_URL (from https://console.neon.tech/)"
+            echo "  - JWT_SECRET_KEY (generate with: openssl rand -hex 32)"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ All required environment variables are configured!"
+
+      - name: Validate OpenRouter API key format
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "🔍 Validating OpenRouter API key format..."
+
+          if [[ ! "$OPENROUTER_API_KEY" =~ ^sk-or-v1- ]]; then
+            echo "❌ ERROR: OPENROUTER_API_KEY does not match expected format (should start with 'sk-or-v1-')"
+            exit 1
+          fi
+
+          echo "✅ OpenRouter API key format is valid"
+
+      - name: Validate Neon Postgres URL format
+        env:
+          NEON_POSTGRES_URL: ${{ secrets.NEON_POSTGRES_URL }}
+        run: |
+          echo "🔍 Validating Neon Postgres URL format..."
+
+          if [[ ! "$NEON_POSTGRES_URL" =~ ^postgresql:// ]]; then
+            echo "❌ ERROR: NEON_POSTGRES_URL does not match expected format (should start with 'postgresql://')"
+            exit 1
+          fi
+
+          if [[ ! "$NEON_POSTGRES_URL" =~ sslmode=require ]]; then
+            echo "⚠️ WARNING: NEON_POSTGRES_URL should include 'sslmode=require' for security"
+          fi
+
+          echo "✅ Neon Postgres URL format is valid"
+
+      - name: Validate JWT secret strength
+        env:
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        run: |
+          echo "🔍 Validating JWT secret strength..."
+
+          key_length=${#JWT_SECRET_KEY}
+
+          if [ $key_length -lt 32 ]; then
+            echo "❌ ERROR: JWT_SECRET_KEY is too short ($key_length characters)"
+            echo "   Minimum recommended length: 32 characters (64 for hex-encoded)"
+            exit 1
+          fi
+
+          echo "✅ JWT secret length is adequate ($key_length characters)"
+
+      - name: Check .env.example exists
+        run: |
+          if [ ! -f backend/.env.example ]; then
+            echo "⚠️ WARNING: backend/.env.example not found"
+            echo "   Consider creating one for documentation purposes"
+          else
+            echo "✅ .env.example exists"
+          fi
+
+      - name: Verify .gitignore excludes .env
+        run: |
+          if ! grep -q "^\.env$" .gitignore 2>/dev/null; then
+            echo "❌ ERROR: .env is not in .gitignore"
+            echo "   This is a security risk - secrets could be committed!"
+            exit 1
+          fi
+
+          echo "✅ .env is properly excluded from Git"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo ""
+          echo "═══════════════════════════════════════════════"
+          echo "✅ Environment Variables Check: PASSED"
+          echo "═══════════════════════════════════════════════"
+          echo ""
+          echo "All required environment variables are:"
+          echo "  ✅ Configured in GitHub Secrets"
+          echo "  ✅ Valid format"
+          echo "  ✅ Secure (excluded from Git)"
+          echo ""
+          echo "Backend is ready for deployment! 🚀"
+          echo ""
+
+      - name: Failure summary
+        if: failure()
+        run: |
+          echo ""
+          echo "═══════════════════════════════════════════════"
+          echo "❌ Environment Variables Check: FAILED"
+          echo "═══════════════════════════════════════════════"
+          echo ""
+          echo "Please fix the issues above before deploying."
+          echo ""
+          echo "Documentation: specs/006-urdu-translation/quickstart.md"
+          echo ""

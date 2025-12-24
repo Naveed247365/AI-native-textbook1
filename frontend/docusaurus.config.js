@@ -34,8 +34,6 @@ const config = {
   organizationName: 'Panaversity', // Usually your GitHub org/user name.
   projectName: 'AI-native-textbook', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
-
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
@@ -118,11 +116,16 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Physical AI',
+            label: '📚 Chapters',
           },
           {
-            to: '/docs/humanoid-robotics/intro',
-            label: 'Humanoid Robotics',
+            to: '/docs/weekly-plan',
+            label: '📅 Weekly Plan',
+            position: 'left',
+          },
+          {
+            to: '/docs/capstone-project',
+            label: '🎓 Capstone',
             position: 'left',
           },
           {
@@ -147,46 +150,62 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Physical AI',
+            title: 'Core Chapters',
             items: [
               {
-                label: 'Introduction to Physical AI',
+                label: '📘 Introduction',
                 to: '/docs/intro',
               },
               {
-                label: 'Embodied Intelligence',
-                to: '/docs/embodied-intelligence',
+                label: '🤖 ROS2 Fundamentals',
+                to: '/docs/ros2-fundamentals',
+              },
+              {
+                label: '🎮 Simulation Environments',
+                to: '/docs/simulation-environments',
               },
             ],
           },
           {
-            title: 'Humanoid Robotics',
+            title: 'Advanced Topics',
             items: [
               {
-                label: 'Humanoid Robotics Intro',
-                to: '/docs/humanoid-robotics/intro',
+                label: '🏗️ NVIDIA Isaac Ecosystem',
+                to: '/docs/nvidia-isaac-ecosystem',
               },
               {
-                label: 'Control Systems',
-                to: '/docs/humanoid-robotics/control-systems',
+                label: '🧠 Vision-Language-Action Models',
+                to: '/docs/vision-language-action-models',
+              },
+              {
+                label: '📅 Weekly Learning Plan',
+                to: '/docs/weekly-plan',
               },
             ],
           },
           {
-            title: 'Resources',
+            title: 'Projects & Resources',
             items: [
               {
-                label: 'Research Papers',
-                href: 'https://scholar.google.com',
+                label: '🎓 Capstone Project',
+                to: '/docs/capstone-project',
               },
               {
-                label: 'GitHub',
+                label: '⚙️ Hardware Specifications',
+                to: '/docs/hardware-specifications',
+              },
+              {
+                label: '📚 Humanoid Robotics Papers',
+                href: 'https://arxiv.org/list/cs.RO/recent',
+              },
+              {
+                label: '💾 GitHub Repository',
                 href: 'https://github.com/Naveed247365/AI-native-textbook1',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} AI-native Physical AI & Humanoid Robotics Textbook. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} AI-Powered Physical AI & Humanoid Robotics Textbook | Built with Docusaurus`,
       },
       prism: {
         theme: prismThemes.github,

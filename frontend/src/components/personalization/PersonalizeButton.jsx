@@ -36,8 +36,11 @@ const PersonalizeButton = ({ chapterId }) => {
   };
 
   const handlePersonalize = async () => {
-    if (!userProfile) {
-      alert('Please log in to use personalization features.');
+    const token = localStorage.getItem('user_token');
+    if (!token || !userProfile) {
+      alert('🔐 Please login to use Personalization features.\n\nGo to Login page to access this feature.');
+      // Redirect to login page
+      window.location.href = '/login';
       return;
     }
 
@@ -169,8 +172,10 @@ const PersonalizeButton = ({ chapterId }) => {
         <div className="personalize-prompt" style={{ textAlign: 'center' }}>
           <p style={{ margin: 0 }}>
             <small style={{ color: '#64748b' }}>
-              🔒 <a href="/docs/auth/signup" style={{ color: '#3b82f6', fontWeight: '600' }}>
-                Log in or sign up
+              🔒 <a href="/login" style={{ color: '#3b82f6', fontWeight: '600' }}>
+                Log in
+              </a> or <a href="/signup" style={{ color: '#3b82f6', fontWeight: '600' }}>
+                sign up
               </a> to get personalized content tailored to your software & hardware background
             </small>
           </p>

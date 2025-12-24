@@ -1,12 +1,13 @@
 import os
 import sys
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException, Header
 import logging
 from qdrant_client import QdrantClient
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from services.rag_service import RAGService
+from auth.jwt_utils import get_current_user_id_from_token
 
 router = APIRouter()
 
@@ -53,8 +54,27 @@ else:
 
 logger = logging.getLogger(__name__)
 
+
+# JWT verification dependency
+def verify_jwt_token(authorization: str = Header(None)) -> dict:
+    """Verify JWT token from Authorization header"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization format")
+
+    token = authorization[7:]  # Remove "Bearer " prefix
+    user_id = get_current_user_id_from_token(token)
+
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    return {"user_id": user_id}
+
+
 @router.post("/chat")
-async def chat(payload: dict):
+async def chat(payload: dict, user_data: dict = Depends(verify_jwt_token)):
     user_msg = payload["message"]
     selected_text = payload.get("selected_text", "")
 

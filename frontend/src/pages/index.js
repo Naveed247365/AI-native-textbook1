@@ -12,11 +12,16 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        {/* Animated background elements */}
         <div className={styles.animatedBackground}>
-          <div className={styles.animatedCircle}></div>
-          <div className={styles.animatedCircle}></div>
-          <div className={styles.animatedCircle}></div>
+          <div className={clsx(styles.animatedCircle, styles.circle1)}></div>
+          <div className={clsx(styles.animatedCircle, styles.circle2)}></div>
+          <div className={clsx(styles.animatedCircle, styles.circle3)}></div>
+          <div className={clsx(styles.animatedParticle, styles.particle1)}></div>
+          <div className={clsx(styles.animatedParticle, styles.particle2)}></div>
+          <div className={clsx(styles.animatedParticle, styles.particle3)}></div>
         </div>
+
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
             <div className={styles.badge}>🤖 AI-POWERED LEARNING</div>
@@ -28,17 +33,37 @@ function HomepageHeader() {
               <Link
                 className="button button--secondary button--lg"
                 to="/docs/intro">
-                Explore Concepts
+                Start Learning Physical AI
               </Link>
               <Link
                 className="button button--primary button--lg"
-                to="/docs/intro">
-                Start Learning
+                to="/docs/humanoid-robotics/intro">
+                Explore Humanoid Robotics
               </Link>
             </div>
           </div>
           <div className={styles.heroVisual}>
-            <div className={styles.robotIcon}>🤖</div>
+            <div className={styles.humanoidRobot}>
+              <div className={styles.humanoidHead}>
+                <div className={clsx(styles.humanoidEye, styles.humanoidLeftEye)}></div>
+                <div className={clsx(styles.humanoidEye, styles.humanoidRightEye)}></div>
+                <div className={styles.humanoidMouth}></div>
+              </div>
+              <div className={styles.humanoidNeck}></div>
+              <div className={styles.humanoidBody}>
+                <div className={styles.humanoidChestPanel}>
+                  <div className={styles.humanoidChestLight}></div>
+                </div>
+              </div>
+              <div className={styles.humanoidArms}>
+                <div className={clsx(styles.humanoidArm, styles.humanoidLeftArm)}></div>
+                <div className={clsx(styles.humanoidArm, styles.humanoidRightArm)}></div>
+              </div>
+              <div className={styles.humanoidLegs}>
+                <div className={clsx(styles.humanoidLeg, styles.humanoidLeftLeg)}></div>
+                <div className={clsx(styles.humanoidLeg, styles.humanoidRightLeg)}></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -53,23 +78,60 @@ function HomepageHighlights() {
         <div className="row">
           <div className="col col--4">
             <div className={clsx(styles.highlightCard, styles.card1)}>
-              <div className={styles.highlightIcon}>🧠</div>
-              <h3>AI-Powered Learning</h3>
-              <p>Interactive AI assistant that helps you understand complex robotics concepts through contextual explanations and real-time Q&A.</p>
+              <div className={styles.highlightIcon}>🤖</div>
+              <h3>Physical AI Fundamentals</h3>
+              <p>Master the principles of embodied intelligence where AI meets physical systems, enabling robots to interact with the real world.</p>
             </div>
           </div>
           <div className="col col--4">
             <div className={clsx(styles.highlightCard, styles.card2)}>
-              <div className={styles.highlightIcon}>🌐</div>
-              <h3>Global Accessibility</h3>
-              <p>Real-time translation support in multiple languages including Urdu, making advanced robotics education accessible worldwide.</p>
+              <div className={styles.highlightIcon}>🦾</div>
+              <h3>Humanoid Robotics</h3>
+              <p>Learn how to design, control, and program humanoid robots that can walk, balance, and interact with human environments.</p>
             </div>
           </div>
           <div className="col col--4">
             <div className={clsx(styles.highlightCard, styles.card3)}>
-              <div className={styles.highlightIcon}>🎯</div>
-              <h3>Personalized Content</h3>
-              <p>Content adapts to your background and experience level, providing tailored learning paths for both beginners and advanced learners.</p>
+              <div className={styles.highlightIcon}>🧠</div>
+              <h3>Embodied Intelligence</h3>
+              <p>Understand how intelligence emerges through the interaction between AI systems and their physical environment for superior robotic capabilities.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturesSection() {
+  return (
+    <section className={styles.featuresSection}>
+      <div className="container">
+        <div className="row">
+          <div className="col col--12">
+            <h2>Physical AI & Robotics Learning Features</h2>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col col--4">
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🔬</div>
+              <h3>Embodied Intelligence</h3>
+              <p>Learn how AI systems gain intelligence through physical interaction with the environment, enabling superior robotic capabilities.</p>
+            </div>
+          </div>
+          <div className="col col--4">
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🦾</div>
+              <h3>Humanoid Control Systems</h3>
+              <p>Master advanced control algorithms for bipedal locomotion, balance, and human-like movement patterns.</p>
+            </div>
+          </div>
+          <div className="col col--4">
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🌐</div>
+              <h3>Real-world Applications</h3>
+              <p>Explore practical implementations of humanoid robots in manufacturing, healthcare, and service industries.</p>
             </div>
           </div>
         </div>
@@ -85,18 +147,18 @@ function CTASection() {
         <div className="row">
           <div className="col col--12">
             <div className={styles.ctaContent}>
-              <h2>Ready to Dive into Physical AI & Humanoid Robotics?</h2>
-              <p>Join thousands of learners exploring the future of robotics with our AI-powered interactive textbook.</p>
+              <h2>Begin Your Journey in Physical AI & Humanoid Robotics</h2>
+              <p>Master the cutting-edge intersection of artificial intelligence and physical systems with our AI-powered interactive textbook.</p>
               <div className={styles.ctaButtons}>
                 <Link
                   className="button button--primary button--lg"
                   to="/docs/intro">
-                  Begin Your Journey
+                  Start Learning Now
                 </Link>
                 <Link
                   className="button button--secondary button--lg"
-                  to="/docs/intro">
-                  View Curriculum
+                  to="/docs/humanoid-robotics/intro">
+                  Explore Robotics
                 </Link>
               </div>
             </div>
@@ -114,10 +176,10 @@ export default function Home() {
       title={`Physical AI & Humanoid Robotics`}
       description="Interactive learning platform for Physical AI and Humanoid Robotics with AI-powered assistance">
       <HomepageHeader />
-      <HomepageHighlights />
-      <CTASection />
-      <main className={styles.mainContent}>
-        <HomepageFeatures />
+      <main>
+        <HomepageHighlights />
+        <FeaturesSection />
+        <CTASection />
       </main>
     </Layout>
   );

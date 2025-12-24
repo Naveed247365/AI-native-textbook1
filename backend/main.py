@@ -11,8 +11,9 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
 import logging
 
@@ -22,6 +23,7 @@ from api.auth import router as auth_router
 from api.translation import router as translation_router
 from api.personalization import router as personalization_router
 from api.rag_search import router as rag_search_router
+from api.feedback import router as feedback_router
 
 # Initialize database
 try:
@@ -52,6 +54,51 @@ async def startup_event():
     else:
         logger.warning("Running in mock mode without database")
 
+# Security Headers Middleware (CSP, XSS Protection)
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+
+        # Content Security Policy (CSP)
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: https:; "
+            "font-src 'self' data:; "
+            "connect-src 'self' https://openrouter.ai; "
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'"
+        )
+
+        # X-Content-Type-Options: Prevent MIME sniffing
+        response.headers["X-Content-Type-Options"] = "nosniff"
+
+        # X-Frame-Options: Prevent clickjacking
+        response.headers["X-Frame-Options"] = "DENY"
+
+        # X-XSS-Protection: Enable browser XSS filter
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+
+        # Referrer-Policy: Control referrer information
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+        # Permissions-Policy: Restrict browser features
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), "
+            "microphone=(), "
+            "camera=(), "
+            "payment=(), "
+            "usb=(), "
+            "magnetometer=()"
+        )
+
+        return response
+
+# Add security headers middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Add CORS middleware to allow requests from the Docusaurus frontend
 app.add_middleware(
     CORSMiddleware,
@@ -74,6 +121,7 @@ app.include_router(auth_router, prefix="/api", tags=["Authentication"])
 app.include_router(translation_router, prefix="/api", tags=["Translation"])
 app.include_router(personalization_router, prefix="/api", tags=["Personalization"])
 app.include_router(rag_search_router, prefix="/api", tags=["RAG Search"])
+app.include_router(feedback_router, tags=["Feedback"])
 
 @app.get("/")
 def read_root():

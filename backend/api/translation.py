@@ -24,7 +24,33 @@ router = APIRouter()
 
 # Initialize services
 translation_service = TranslationService()
-rate_limiter = RateLimiter(limit=10, window_seconds=3600)  # 10 translations/hour
+rate_limiter = RateLimiter(max_requests=10, window_seconds=3600)  # 10 translations/hour
+
+# Cost and performance metrics (in-memory)
+translation_metrics = {
+    "total_translations": 0,
+    "cache_hits": 0,
+    "cache_misses": 0,
+    "api_calls": 0,
+    "total_latency_ms": 0,
+    "api_failures": 0
+}
+
+def log_metrics():
+    """Log aggregated metrics for monitoring"""
+    total = translation_metrics["total_translations"]
+    if total > 0:
+        cache_hit_rate = (translation_metrics["cache_hits"] / total) * 100
+        avg_latency = translation_metrics["total_latency_ms"] / total
+        cost_savings = (translation_metrics["cache_hits"] / total) * 100  # % of API calls saved
+        logger.info(
+            f"📊 Translation Metrics: "
+            f"Total={total}, Cache Hit Rate={cache_hit_rate:.1f}%, "
+            f"API Calls={translation_metrics['api_calls']}, "
+            f"Avg Latency={avg_latency:.0f}ms, "
+            f"Cost Savings={cost_savings:.1f}%, "
+            f"Failures={translation_metrics['api_failures']}"
+        )
 
 class UrduTranslationRequest(BaseModel):
     chapter_id: str
@@ -78,7 +104,11 @@ async def translate_to_urdu(
         if not user_id:
             raise HTTPException(status_code=401, detail="Invalid or expired token")
 
+        import time
+        start_time = time.time()
+
         logger.info(f"Translation request from user {user_id} for chapter {request.chapter_id}")
+        translation_metrics["total_translations"] += 1
 
         # 2. Validate content hash
         computed_hash = hashlib.sha256(request.content.encode('utf-8')).hexdigest()
@@ -110,7 +140,11 @@ async def translate_to_urdu(
             ).first()
 
             if cached_translation:
-                logger.info(f"Cache HIT for chapter {request.chapter_id}")
+                latency_ms = (time.time() - start_time) * 1000
+                translation_metrics["cache_hits"] += 1
+                translation_metrics["total_latency_ms"] += latency_ms
+                logger.info(f"✅ Cache HIT for chapter {request.chapter_id} | Latency: {latency_ms:.0f}ms")
+                log_metrics()  # Log aggregated metrics every 10 requests
                 return UrduTranslationResponse(
                     translated_content=cached_translation.translated_content,
                     cached=True,
@@ -118,19 +152,27 @@ async def translate_to_urdu(
                 )
 
         # 5. Cache MISS - Translate using OpenRouter
-        logger.info(f"Cache MISS for chapter {request.chapter_id} - calling OpenRouter API")
+        translation_metrics["cache_misses"] += 1
+        translation_metrics["api_calls"] += 1
+        logger.info(f"❌ Cache MISS for chapter {request.chapter_id} - calling OpenRouter API")
 
+        api_start_time = time.time()
         try:
             translated_text = translation_service.translate_to_urdu(request.content)
+            api_latency_ms = (time.time() - api_start_time) * 1000
+            logger.info(f"🌐 OpenRouter API call successful | API Latency: {api_latency_ms:.0f}ms")
         except Exception as api_error:
-            logger.error(f"OpenRouter API error: {str(api_error)}")
+            translation_metrics["api_failures"] += 1
+            logger.error(f"❌ OpenRouter API error: {str(api_error)}")
             # Retry once with exponential backoff
-            import time
             time.sleep(2)
             try:
                 translated_text = translation_service.translate_to_urdu(request.content)
+                api_latency_ms = (time.time() - api_start_time) * 1000
+                logger.info(f"✅ Retry successful after {api_latency_ms:.0f}ms")
             except Exception as retry_error:
-                logger.error(f"Retry failed: {str(retry_error)}")
+                translation_metrics["api_failures"] += 1
+                logger.error(f"❌ Retry failed: {str(retry_error)}")
                 raise HTTPException(
                     status_code=503,
                     detail="Translation service temporarily unavailable. Please try again."
@@ -172,6 +214,12 @@ async def translate_to_urdu(
                 ).first()
                 if cached_translation:
                     translation_id = str(cached_translation.id)
+
+        # Log final metrics
+        total_latency_ms = (time.time() - start_time) * 1000
+        translation_metrics["total_latency_ms"] += total_latency_ms
+        logger.info(f"💾 Translation complete | Total Latency: {total_latency_ms:.0f}ms | Cached: False")
+        log_metrics()
 
         return UrduTranslationResponse(
             translated_content=translated_text,

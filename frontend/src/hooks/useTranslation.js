@@ -22,6 +22,7 @@ export function useTranslation(chapterId, authToken) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [cached, setCached] = useState(false);
+  const [translationId, setTranslationId] = useState(null);
 
   /**
    * Extract content from DOM
@@ -89,10 +90,18 @@ export function useTranslation(chapterId, authToken) {
       // Update state
       setUrduContent(result.translatedContent);
       setCached(result.cached);
+      setTranslationId(result.translationId || result.translation_id); // Save translation ID for feedback
       setIsUrdu(true);
       setError('');
 
-      console.log(`Translation ${result.cached ? 'loaded from cache' : 'generated'}`);
+      console.log(`Translation ${result.cached ? 'loaded from cache' : 'generated'}`, { translationId: result.translationId });
+
+      // Emit event for parent components
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('translationChanged', {
+          detail: { content: result.translatedContent, isUrdu: true }
+        }));
+      }
 
     } catch (err) {
       console.error('Translation error:', err);
@@ -115,8 +124,19 @@ export function useTranslation(chapterId, authToken) {
     }
 
     // Toggle instantly
-    setIsUrdu(!isUrdu);
+    const newIsUrdu = !isUrdu;
+    setIsUrdu(newIsUrdu);
     setError('');
+
+    // Emit event for parent components
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('translationChanged', {
+        detail: {
+          content: newIsUrdu ? urduContent : originalContent,
+          isUrdu: newIsUrdu
+        }
+      }));
+    }
   };
 
   /**
@@ -138,6 +158,7 @@ export function useTranslation(chapterId, authToken) {
     loading,
     error,
     cached,
+    translationId,
 
     // Handlers
     handleTranslate,

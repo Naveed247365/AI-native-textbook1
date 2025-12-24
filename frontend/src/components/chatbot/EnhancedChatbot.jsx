@@ -14,11 +14,18 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSelectedText, setCurrentSelectedText] = useState(selectedText);
   const [animationState, setAnimationState] = useState('idle'); // idle, opening, closing
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Refs for DOM elements and cleanup
   const chatbotRef = useRef(null);
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const token = localStorage.getItem('user_token');
+    setIsAuthenticated(!!token);
+  }, []);
 
   // Scroll to bottom of messages
   const scrollToBottom = () => {
@@ -32,6 +39,12 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
   // Handle selected text updates with proper formatting
   useEffect(() => {
     if (selectedText && selectedText.trim() !== '') {
+      // Check authentication before opening chatbot
+      if (!isAuthenticated) {
+        alert('🔐 Please login to use the AI Chatbot.\n\nGo to Login page to access this feature.');
+        return;
+      }
+
       setCurrentSelectedText(selectedText);
 
       // Format input with selected text context
@@ -57,7 +70,7 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
         }
       }, 100);
     }
-  }, [selectedText]);
+  }, [selectedText, isAuthenticated]);
 
   // Event listeners for close functionality
   useEffect(() => {
@@ -112,6 +125,12 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
    */
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
+
+    // Check authentication before sending message
+    if (!isAuthenticated) {
+      alert('🔐 Please login to use the AI Chatbot.\n\nGo to Login page to access this feature.');
+      return;
+    }
 
     // Extract question from input (remove selected text prefix)
     // Handle both cases: formatted input with selected text OR direct question
@@ -168,10 +187,12 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
         ? '/api'
         : 'http://localhost:8001/api';
 
+      const token = localStorage.getItem('user_token');
       const response = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           message: questionText,
@@ -181,6 +202,14 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Authentication error - clear token and show message
+          localStorage.removeItem('user_token');
+          setIsAuthenticated(false);
+          alert('🔐 Your session has expired. Please login again to use the AI Chatbot.');
+          handleCloseChatbot();
+          return;
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

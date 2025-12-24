@@ -295,30 +295,30 @@
 
 ### Tests for User Story 6 (TDD: Write FIRST, ensure FAIL) ⚠️
 
-- [ ] T035 [P] [US6] Create backend/tests/unit/test_feedback_model.py with test cases:
+- [X] T035 [P] [US6] Create backend/tests/unit/test_feedback_model.py with test cases:
   - `test_create_translation_feedback()` - verify TranslationFeedback model saves to database
   - `test_feedback_foreign_key_constraint()` - verify feedback links to translation record
-- [ ] T036 [P] [US6] Create backend/tests/integration/test_feedback_endpoint.py with test cases:
+- [X] T036 [P] [US6] Create backend/tests/integration/test_feedback_endpoint.py with test cases:
   - `test_submit_feedback_authenticated()` - POST /api/translate/feedback with JWT, verify 201
   - `test_submit_feedback_unauthenticated()` - POST without JWT, verify 401
 
 ### Implementation for User Story 6
 
-- [ ] T037 [P] [US6] Create backend/models/translation_feedback.py with TranslationFeedback model:
+- [X] T037 [P] [US6] Create backend/models/translation_feedback.py with TranslationFeedback model:
   - Fields: id (UUID), translation_id (FK to translations), user_id (FK to users), issue_description (TEXT), created_at (TIMESTAMP)
-- [ ] T038 [US6] Use `alembic revision --autogenerate -m "add translation_feedback table"` to create migration
-- [ ] T039 [US6] Use `alembic upgrade head` to apply migration
-- [ ] T040 [P] [US6] Create backend/api/feedback.py with POST /api/translate/feedback endpoint:
+- [X] T038 [US6] Use `alembic revision --autogenerate -m "add translation_feedback table"` to create migration
+- [X] T039 [US6] Use `alembic upgrade head` to apply migration
+- [X] T040 [P] [US6] Create backend/api/feedback.py with POST /api/translate/feedback endpoint:
   - Accept JSON body: `{translation_id, issue_description}`
   - Use `verify_jwt_token()` dependency
   - Save feedback to database
   - Return 201 with feedback_id
-- [ ] T041 [P] [US6] Create frontend/src/components/translation/FeedbackButton.jsx:
+- [X] T041 [P] [US6] Create frontend/src/components/translation/FeedbackButton.jsx:
   - "Report Issue" button visible only when `isUrdu === true`
   - Click opens modal with textarea for issue description
   - Submit button calls API endpoint
   - Show success message on submission
-- [ ] T042 [US6] Update frontend/src/components/translation/UrduTranslationButton.jsx to render FeedbackButton when translated
+- [X] T042 [US6] Update frontend/src/components/translation/UrduTranslationButton.jsx to render FeedbackButton when translated
 
 **Checkpoint**: All user stories (US1-US6) complete - full translation feature with feedback mechanism
 
@@ -328,25 +328,25 @@
 
 **Purpose**: Improvements affecting multiple user stories
 
-- [ ] T043 [P] Add RTL (right-to-left) CSS support in frontend/src/components/translation/TranslationButton.module.css:
+- [X] T043 [P] Add RTL (right-to-left) CSS support in frontend/src/components/translation/TranslationButton.module.css:
   - Add `.urdu-content { direction: rtl; text-align: right; }` class
   - Apply class when `isUrdu === true`
   - Ensure code blocks remain LTR
-- [ ] T044 [P] Add logging to backend/api/translation.py:
+- [X] T044 [P] Add logging to backend/api/translation.py:
   - Log every translation request (user_id, chapter_id, cache_hit, latency_ms)
   - Log OpenRouter API failures for monitoring
   - Track cost metrics (API calls vs cache hits)
-- [ ] T045 [P] Create backend/tests/e2e/test_translation_flow.py with Playwright:
+- [X] T045 [P] Create backend/tests/e2e/test_translation_flow.py with Playwright:
   - End-to-end test: login → navigate to chapter → translate → toggle → logout
   - Verify full user journey works across backend and frontend
 - [X] T046 [P] Update frontend/docs/intro.md and other chapters to add `chapter_id` to frontmatter (e.g., `chapter_id: intro`, `chapter_id: ch01-ros2-fundamentals`) ✅ 8 chapters configured
-- [ ] T047 [P] Add GitHub Actions workflow step in .github/workflows/ to verify backend environment variables (OPENROUTER_API_KEY, NEON_URL) are configured
-- [ ] T048 [P] Performance optimization: add database connection pooling configuration in backend/database/db.py (use NullPool for serverless Neon)
-- [ ] T049 Code cleanup: remove unused imports, fix linting errors across backend/ and frontend/
-- [ ] T050 Security hardening: add content security policy headers in backend/api/ to prevent XSS
-- [ ] T051 [P] Create specs/006-urdu-translation/research.md documenting OpenRouter integration findings from Phase 0
-- [ ] T052 [P] Create specs/006-urdu-translation/data-model.md documenting translations table schema and relationships
-- [ ] T053 [P] Create specs/006-urdu-translation/quickstart.md with developer setup instructions
+- [X] T047 [P] Add GitHub Actions workflow step in .github/workflows/ to verify backend environment variables (OPENROUTER_API_KEY, NEON_URL) are configured
+- [X] T048 [P] Performance optimization: add database connection pooling configuration in backend/database/db.py (use NullPool for serverless Neon)
+- [X] T049 Code cleanup: remove unused imports, fix linting errors across backend/ and frontend/
+- [X] T050 Security hardening: add content security policy headers in backend/api/ to prevent XSS
+- [X] T051 [P] Create specs/006-urdu-translation/research.md documenting OpenRouter integration findings from Phase 0
+- [X] T052 [P] Create specs/006-urdu-translation/data-model.md documenting translations table schema and relationships
+- [X] T053 [P] Create specs/006-urdu-translation/quickstart.md with developer setup instructions
 
 ---
 
