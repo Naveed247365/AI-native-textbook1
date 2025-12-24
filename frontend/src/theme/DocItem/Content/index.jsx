@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Content from '@theme-original/DocItem/Content';
 import PersonalizeButton from '@site/src/components/personalization/PersonalizeButton';
 import UrduTranslationButton from '@site/src/components/translation/UrduTranslationButton';
+import ReadingProgress from '@site/src/components/ReadingProgress';
+import ChapterNavigation from '@site/src/components/ChapterNavigation';
 import { useDoc } from '@docusaurus/plugin-content-docs/client';
 
 export default function ContentWrapper(props) {
@@ -24,6 +26,9 @@ export default function ContentWrapper(props) {
 
   return (
     <>
+      {/* Reading progress bar at top */}
+      <ReadingProgress />
+
       {/* Inject PersonalizeButton and UrduTranslationButton at the top of chapter content */}
       {chapterId && (
         <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -51,6 +56,9 @@ export default function ContentWrapper(props) {
       ) : (
         <Content {...props} />
       )}
+
+      {/* Chapter navigation at bottom */}
+      <ChapterNavigation />
     </>
   );
 }

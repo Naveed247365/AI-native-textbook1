@@ -1,0 +1,24 @@
+/* Reading Progress Bar - Fixed at top of page */
+.reading-progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: transparent;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.reading-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #76B900 0%, #8FD600 100%);
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 10px rgba(118, 185, 0, 0.5);
+}
+
+/* Dark mode variant */
+[data-theme='dark'] .reading-progress-bar {
+  background: linear-gradient(90deg, #8FD600 0%, #A3E635 100%);
+  box-shadow: 0 0 10px rgba(143, 214, 0, 0.6);
+}
