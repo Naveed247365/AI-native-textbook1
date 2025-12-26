@@ -5,7 +5,7 @@ chapter_id: hardware-specifications
 
 # Hardware Specifications for Physical AI & Humanoid Robotics
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=1200&q=80" alt="Robotics Hardware Platform" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>High-performance hardware for physical AI systems</p>
 </div>
@@ -36,7 +36,7 @@ The hardware platform is fundamental to embodied intelligence systems. The choic
 
 ## RTX Workstation Specifications
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?w=800&q=80" alt="High-Performance Workstation" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>RTX workstation for AI development</p>
 </div>
@@ -105,7 +105,7 @@ The hardware platform is fundamental to embodied intelligence systems. The choic
 
 ## Unitree Robot Platforms
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1546776310-eef45dd6d63c?w=800&q=80" alt="Humanoid Robot Platform" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Advanced humanoid and quadruped robots</p>
 </div>

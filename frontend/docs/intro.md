@@ -5,7 +5,7 @@ chapter_id: "ch00-introduction"
 
 # Introduction to Physical AI & Humanoid Robotics
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80" alt="Advanced Humanoid Robot" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Modern humanoid robotics powered by AI</p>
 </div>
@@ -16,7 +16,7 @@ Welcome to the AI-native interactive textbook on Physical AI & Humanoid Robotics
 
 ### What is Embodied Intelligence?
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=80" alt="AI and Robotics Integration" style={{width: '100%', maxWidth: '700px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>AI-powered robotic systems interacting with the physical world</p>
 </div>
@@ -27,7 +27,7 @@ Embodied Intelligence represents the convergence of artificial intelligence with
 
 This textbook is organized into four core modules:
 
-<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', margin: '2rem 0'}}>
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', margin: '1rem 0'}}>
   <div style={{textAlign: 'center'}}>
     <img src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?w=600&q=80" alt="ROS 2 System" style={{width: '100%', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
     <h4>1. ROS 2 Fundamentals</h4>
@@ -68,7 +68,7 @@ This textbook includes several AI-powered features to enhance your learning:
 
 Throughout this textbook, we'll reference specific hardware platforms that exemplify embodied intelligence:
 
-<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', margin: '2rem 0'}}>
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', margin: '1rem 0'}}>
   <div>
     <img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600&q=80" alt="High-Performance Computing" style={{width: '100%', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
     <h5>RTX Workstations</h5>

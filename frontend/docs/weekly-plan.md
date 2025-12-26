@@ -5,7 +5,7 @@ chapter_id: weekly-plan
 
 # Weekly Learning Plan for Physical AI & Humanoid Robotics
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80" alt="12-Week Learning Plan" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Structured 12-week learning journey</p>
 </div>
@@ -32,7 +32,7 @@ By the end of this course, students will be able to:
 
 ## Week-by-Week Breakdown
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800&q=80" alt="Weekly Progress Tracking" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Progressive skill development week by week</p>
 </div>
@@ -400,7 +400,7 @@ By the end of this course, students will be able to:
 
 ## Resources and Tools
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80" alt="Development Tools" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Software and hardware tools for learning</p>
 </div>

@@ -5,7 +5,7 @@ chapter_id: "ch02-simulation-environments"
 
 # Module 2: Simulation Environments - Gazebo and Unity
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=80" alt="Robot Simulation Environment" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Advanced robot simulation for testing and training</p>
 </div>
@@ -25,7 +25,7 @@ Simulation environments allow us to:
 
 ### Gazebo: The Robot Simulation Engine
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80" alt="Gazebo Physics Simulation" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>3D physics-based robot simulation</p>
 </div>
@@ -97,7 +97,7 @@ Gazebo provides realistic sensor simulation with configurable noise parameters:
 
 ### Unity: Game Engine for Robotics Simulation
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=800&q=80" alt="Unity 3D Simulation Environment" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Photorealistic simulation with Unity</p>
 </div>

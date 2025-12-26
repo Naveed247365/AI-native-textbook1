@@ -5,7 +5,7 @@ chapter_id: "ch01-ros2-fundamentals"
 
 # Module 1: ROS 2 Fundamentals
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1518314916381-77a37c2a49ae?w=1200&q=80" alt="ROS 2 Robotics System" style={{width: '100%', maxWidth: '800px', borderRadius: '12px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Distributed robotics architecture with ROS 2</p>
 </div>
@@ -27,7 +27,7 @@ Key improvements in ROS 2 include:
 
 ### Core Concepts
 
-<div style={{textAlign: 'center', margin: '2rem 0'}}>
+<div style={{textAlign: 'center', margin: '1rem 0'}}>
   <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80" alt="ROS 2 Node Architecture" style={{width: '100%', maxWidth: '600px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}} />
   <p style={{fontSize: '0.9rem', color: '#666', marginTop: '0.5rem'}}>Modular node architecture for distributed processing</p>
 </div>
