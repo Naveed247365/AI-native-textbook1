@@ -115,7 +115,10 @@
       "Bash(pkill:*)",
       "WebFetch(domain:ai-native.panaversity.org)",
       "Bash(\"/mnt/e/hakaton 1/AI-native-textbook/frontend/static/img/robots\" )",
-      "Bash(\"/mnt/e/hakaton 1/AI-native-textbook/frontend/static/img/icons\")"
+      "Bash(\"/mnt/e/hakaton 1/AI-native-textbook/frontend/static/img/icons\")",
+      "Bash(git stash:*)",
+      "WebFetch(domain:agentfactory.panaversity.org)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

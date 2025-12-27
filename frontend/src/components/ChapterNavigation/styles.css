@@ -2,7 +2,7 @@
 .chapter-navigation {
   margin-top: 3rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--ifm-color-emphasis-300);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chapter-nav-container {
@@ -15,10 +15,10 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  background-color: var(--ifm-background-surface-color);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
   text-decoration: none;
   color: var(--ifm-font-color-base);
   transition: all 0.2s ease;
@@ -27,11 +27,11 @@
 }
 
 .chapter-nav-link:hover {
-  border-color: #76B900;
-  background-color: rgba(118, 185, 0, 0.05);
+  border-color: rgba(0, 212, 170, 0.4);
+  background: rgba(0, 212, 170, 0.08);
   text-decoration: none;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(118, 185, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .chapter-nav-prev {
@@ -50,9 +50,11 @@
 }
 
 .chapter-nav-label {
-  font-size: 0.875rem;
-  color: var(--ifm-color-emphasis-600);
+  font-size: 0.8rem;
+  color: #71717a;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .chapter-nav-title {
@@ -62,13 +64,34 @@
 }
 
 .chapter-nav-arrow {
-  font-size: 1.5rem;
-  color: #76B900;
+  font-size: 1.25rem;
+  color: #00d4aa;
   font-weight: bold;
+  transition: transform 0.2s ease;
 }
 
 .chapter-nav-link:hover .chapter-nav-arrow {
   transform: scale(1.2);
+}
+
+.chapter-nav-link:hover .chapter-nav-title {
+  color: #00d4aa;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] .chapter-navigation {
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .chapter-nav-link {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .chapter-nav-link:hover {
+  border-color: rgba(0, 212, 170, 0.4);
+  background: rgba(0, 212, 170, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* Mobile responsive */
