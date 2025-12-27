@@ -17,7 +17,7 @@ const PersonalizeButton = ({ chapterId }) => {
   const fetchUserProfile = async () => {
     try {
       const API_BASE = process.env.NODE_ENV === 'production'
-        ? '/api'
+        ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
         : 'http://localhost:8001/api';
 
       const response = await fetch(`${API_BASE}/auth/profile`, {
@@ -52,7 +52,7 @@ const PersonalizeButton = ({ chapterId }) => {
       const content = contentElement ? contentElement.innerText.substring(0, 10000) : '';
 
       const API_BASE = process.env.NODE_ENV === 'production'
-        ? '/api'
+        ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
         : 'http://localhost:8001/api';
 
       const response = await fetch(`${API_BASE}/personalization/adapt`, {

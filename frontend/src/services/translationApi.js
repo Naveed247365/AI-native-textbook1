@@ -17,7 +17,7 @@
  */
 export async function translateToUrdu(chapterId, content, contentHash, authToken) {
   const API_BASE = process.env.NODE_ENV === 'production'
-    ? '/api'
+    ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
     : 'http://localhost:8001/api';
 
   const url = `${API_BASE}/translate/urdu`;
@@ -95,7 +95,7 @@ export async function translateToUrdu(chapterId, content, contentHash, authToken
  */
 export async function getTranslationStats(authToken) {
   const API_BASE = process.env.NODE_ENV === 'production'
-    ? '/api'
+    ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
     : 'http://localhost:8001/api';
 
   const url = `${API_BASE}/translate/stats`;

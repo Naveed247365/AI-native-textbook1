@@ -182,9 +182,9 @@ const EnhancedChatbot = ({ selectedText = '', onTextSelected }) => {
     setIsLoading(true);
 
     try {
-      // Call backend API (use direct URL for local development, proxy for production)
+      // Call backend API (use direct URL for local development, HF Space for production)
       const API_BASE = process.env.NODE_ENV === 'production'
-        ? '/api'
+        ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
         : 'http://localhost:8001/api';
 
       const token = localStorage.getItem('user_token');

@@ -14,7 +14,7 @@ export default function SignupPage() {
 
     try {
       const API_BASE = process.env.NODE_ENV === 'production'
-        ? '/api'
+        ? 'https://naveed247365-ai-textbook-backend.hf.space/api'
         : 'http://localhost:8001/api';
 
       const payload = {
