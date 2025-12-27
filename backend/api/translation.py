@@ -1,30 +1,38 @@
-from fastapi import APIRouter, HTTPException, Depends, Header
+from fastapi import APIRouter, HTTPException, Header
 from pydantic import BaseModel
 from typing import Optional
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 import hashlib
 import logging
 import os
+
+logger = logging.getLogger(__name__)
+router = APIRouter()
 
 # Import dependencies
 try:
     from services.translation_service import TranslationService
     from services.rate_limiter import RateLimiter
-    from database.db import get_db
-    from database.models import Translation
     from auth.jwt_utils import get_current_user_id_from_token
+    SERVICES_ENABLED = True
+except ImportError as e:
+    SERVICES_ENABLED = False
+    logging.warning(f"Services not available: {str(e)}")
+
+try:
+    from database.db import SessionLocal
+    from database.models import Translation
     DB_ENABLED = True
 except ImportError as e:
     DB_ENABLED = False
-    logging.warning(f"Database or dependencies not available: {str(e)}")
-
-logger = logging.getLogger(__name__)
-router = APIRouter()
+    logging.warning(f"Database not available: {str(e)}")
 
 # Initialize services
-translation_service = TranslationService()
-rate_limiter = RateLimiter(max_requests=10, window_seconds=3600)  # 10 translations/hour
+if SERVICES_ENABLED:
+    translation_service = TranslationService()
+    rate_limiter = RateLimiter(max_requests=10, window_seconds=3600)
+else:
+    translation_service = None
+    rate_limiter = None
 
 # Cost and performance metrics (in-memory)
 translation_metrics = {
@@ -42,9 +50,9 @@ def log_metrics():
     if total > 0:
         cache_hit_rate = (translation_metrics["cache_hits"] / total) * 100
         avg_latency = translation_metrics["total_latency_ms"] / total
-        cost_savings = (translation_metrics["cache_hits"] / total) * 100  # % of API calls saved
+        cost_savings = (translation_metrics["cache_hits"] / total) * 100
         logger.info(
-            f"📊 Translation Metrics: "
+            f"Translation Metrics: "
             f"Total={total}, Cache Hit Rate={cache_hit_rate:.1f}%, "
             f"API Calls={translation_metrics['api_calls']}, "
             f"Avg Latency={avg_latency:.0f}ms, "
@@ -75,26 +83,19 @@ class TranslationResponse(BaseModel):
     source_lang: str
     target_lang: str
 
+
 @router.post("/translate/urdu", response_model=UrduTranslationResponse)
 async def translate_to_urdu(
     request: UrduTranslationRequest,
-    authorization: Optional[str] = Header(None),
-    db: Session = Depends(get_db) if DB_ENABLED else None
+    authorization: Optional[str] = Header(None)
 ):
     """
     Translate chapter content to Urdu with JWT authentication, caching, and rate limiting
-
-    **Requirements**:
-    - JWT token in Authorization header
-    - Content hash must match SHA-256 of content
-    - Rate limit: 10 translations per user per hour
-
-    **Returns**:
-    - translated_content: Urdu translation
-    - cached: Whether result came from cache
-    - translation_id: UUID of translation record
     """
     try:
+        if not SERVICES_ENABLED:
+            raise HTTPException(status_code=503, detail="Translation service not available")
+
         # 1. Verify JWT authentication
         if not authorization or not authorization.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
@@ -130,49 +131,56 @@ async def translate_to_urdu(
             )
 
         # 4. Check database cache (if enabled)
-        if DB_ENABLED and db:
-            from database.models import Translation as DBTranslation
+        db = None
+        if DB_ENABLED:
+            try:
+                db = SessionLocal()
+                cached_translation = db.query(Translation).filter(
+                    Translation.chapter_id == request.chapter_id,
+                    Translation.content_hash == request.content_hash,
+                    Translation.target_language == "urdu"
+                ).first()
 
-            cached_translation = db.query(DBTranslation).filter(
-                DBTranslation.chapter_id == request.chapter_id,
-                DBTranslation.content_hash == request.content_hash,
-                DBTranslation.target_language == "urdu"
-            ).first()
-
-            if cached_translation:
-                latency_ms = (time.time() - start_time) * 1000
-                translation_metrics["cache_hits"] += 1
-                translation_metrics["total_latency_ms"] += latency_ms
-                logger.info(f"✅ Cache HIT for chapter {request.chapter_id} | Latency: {latency_ms:.0f}ms")
-                log_metrics()  # Log aggregated metrics every 10 requests
-                return UrduTranslationResponse(
-                    translated_content=cached_translation.translated_content,
-                    cached=True,
-                    translation_id=str(cached_translation.id)
-                )
+                if cached_translation:
+                    latency_ms = (time.time() - start_time) * 1000
+                    translation_metrics["cache_hits"] += 1
+                    translation_metrics["total_latency_ms"] += latency_ms
+                    logger.info(f"Cache HIT for chapter {request.chapter_id} | Latency: {latency_ms:.0f}ms")
+                    log_metrics()
+                    return UrduTranslationResponse(
+                        translated_content=cached_translation.translated_content,
+                        cached=True,
+                        translation_id=str(cached_translation.id)
+                    )
+            except Exception as db_err:
+                logger.warning(f"Database cache check failed: {str(db_err)}")
+            finally:
+                if db:
+                    db.close()
+                    db = None
 
         # 5. Cache MISS - Translate using OpenRouter
         translation_metrics["cache_misses"] += 1
         translation_metrics["api_calls"] += 1
-        logger.info(f"❌ Cache MISS for chapter {request.chapter_id} - calling OpenRouter API")
+        logger.info(f"Cache MISS for chapter {request.chapter_id} - calling OpenRouter API")
 
         api_start_time = time.time()
         try:
             translated_text = translation_service.translate_to_urdu(request.content)
             api_latency_ms = (time.time() - api_start_time) * 1000
-            logger.info(f"🌐 OpenRouter API call successful | API Latency: {api_latency_ms:.0f}ms")
+            logger.info(f"OpenRouter API call successful | API Latency: {api_latency_ms:.0f}ms")
         except Exception as api_error:
             translation_metrics["api_failures"] += 1
-            logger.error(f"❌ OpenRouter API error: {str(api_error)}")
+            logger.error(f"OpenRouter API error: {str(api_error)}")
             # Retry once with exponential backoff
             time.sleep(2)
             try:
                 translated_text = translation_service.translate_to_urdu(request.content)
                 api_latency_ms = (time.time() - api_start_time) * 1000
-                logger.info(f"✅ Retry successful after {api_latency_ms:.0f}ms")
+                logger.info(f"Retry successful after {api_latency_ms:.0f}ms")
             except Exception as retry_error:
                 translation_metrics["api_failures"] += 1
-                logger.error(f"❌ Retry failed: {str(retry_error)}")
+                logger.error(f"Retry failed: {str(retry_error)}")
                 raise HTTPException(
                     status_code=503,
                     detail="Translation service temporarily unavailable. Please try again."
@@ -180,12 +188,12 @@ async def translate_to_urdu(
 
         # 6. Save to database (if enabled)
         translation_id = None
-        if DB_ENABLED and db:
+        if DB_ENABLED:
             try:
-                from database.models import Translation as DBTranslation
                 import uuid
+                db = SessionLocal()
 
-                db_translation = DBTranslation(
+                db_translation = Translation(
                     id=uuid.uuid4(),
                     chapter_id=request.chapter_id,
                     content_hash=request.content_hash,
@@ -203,22 +211,18 @@ async def translate_to_urdu(
                 translation_id = str(db_translation.id)
                 logger.info(f"Saved translation to database: {translation_id}")
 
-            except IntegrityError as e:
-                logger.warning(f"Duplicate translation detected (race condition): {str(e)}")
-                db.rollback()
-                # Query again to get existing translation
-                cached_translation = db.query(DBTranslation).filter(
-                    DBTranslation.chapter_id == request.chapter_id,
-                    DBTranslation.content_hash == request.content_hash,
-                    DBTranslation.target_language == "urdu"
-                ).first()
-                if cached_translation:
-                    translation_id = str(cached_translation.id)
+            except Exception as save_err:
+                logger.warning(f"Failed to save translation: {str(save_err)}")
+                if db:
+                    db.rollback()
+            finally:
+                if db:
+                    db.close()
 
         # Log final metrics
         total_latency_ms = (time.time() - start_time) * 1000
         translation_metrics["total_latency_ms"] += total_latency_ms
-        logger.info(f"💾 Translation complete | Total Latency: {total_latency_ms:.0f}ms | Cached: False")
+        logger.info(f"Translation complete | Total Latency: {total_latency_ms:.0f}ms | Cached: False")
         log_metrics()
 
         return UrduTranslationResponse(
@@ -239,9 +243,11 @@ async def translate_to_urdu(
 async def translate_text(request: TranslationRequest):
     """
     Legacy translation endpoint - translate text between languages
-    (Kept for backward compatibility with existing frontend)
     """
     try:
+        if not SERVICES_ENABLED:
+            raise HTTPException(status_code=503, detail="Translation service not available")
+
         if request.source_lang == "en" and request.target_lang == "ur":
             translated_text = translation_service.translate_to_urdu(request.text)
         elif request.source_lang == "ur" and request.target_lang == "en":
@@ -259,6 +265,8 @@ async def translate_text(request: TranslationRequest):
             target_lang=request.target_lang
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Translation error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error during translation: {str(e)}")
@@ -269,8 +277,9 @@ async def translation_health():
     """Health check for translation service"""
     return {
         "status": "translation service is running",
+        "services_enabled": SERVICES_ENABLED,
         "database_enabled": DB_ENABLED,
-        "rate_limiter_enabled": True
+        "rate_limiter_enabled": rate_limiter is not None
     }
 
 
@@ -280,6 +289,9 @@ async def translation_stats(
 ):
     """Get translation statistics for current user"""
     try:
+        if not SERVICES_ENABLED:
+            raise HTTPException(status_code=503, detail="Service not available")
+
         if not authorization or not authorization.startswith("Bearer "):
             raise HTTPException(status_code=401, detail="Missing authorization header")
 

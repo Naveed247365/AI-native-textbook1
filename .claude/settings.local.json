@@ -118,7 +118,8 @@
       "Bash(\"/mnt/e/hakaton 1/AI-native-textbook/frontend/static/img/icons\")",
       "Bash(git stash:*)",
       "WebFetch(domain:agentfactory.panaversity.org)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:naveed247365-ai-textbook-backend.hf.space)"
     ],
     "deny": [],
     "ask": []
