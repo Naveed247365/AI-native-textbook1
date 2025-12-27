@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy the rest of the application
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8001
+# Expose the port the app runs on (HuggingFace uses 7860)
+EXPOSE 7860
 
-# Run the application
-CMD ["bash", "-c", "cd /app && python -c \"from main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=int('${PORT:-8001}'))\""]
+# Run the application on port 7860 for HuggingFace Spaces
+CMD ["python", "-c", "from main import app; import uvicorn; uvicorn.run(app, host='0.0.0.0', port=7860)"]
